@@ -1,0 +1,25 @@
+<%- include('header') -%>
+    <div class="box" id="heading">
+        <h1>
+            <%=heading%>
+        </h1>
+    </div>
+    <div class="box">
+        <% titles.forEach(function(title){ %>
+            <form action="/delete" method="post">
+                <div class="item">
+
+                    <input type="checkbox" name="checkbox" value=<%=title._id%> onchange="this.form.submit()" />
+                    <p>
+                        <%=title.name%>
+                    </p>
+                </div>
+            </form>
+            <% })%>
+                <form class="item" action="/" method="post">
+                    <input type="text" name="title" placeholder="new item" autocomplete="off" />
+
+                    <button type="submit" name="heading" value="<%=heading%>"> +</button>
+                </form>
+    </div>
+    <%- include('footer') -%>
