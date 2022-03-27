@@ -7,7 +7,7 @@ app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: true }));
 // main().catch(err=>console.log(err));
 
-mongoose.connect("mongodb://localhost:27017/todolistDB");
+mongoose.connect("mongodb+srv://shubhamkkc:12345@cluster0.ap96j.mongodb.net/myFirstDatabase?retryWrites=true&w=majority");
 const titleSchema = {
     name: String
 }
@@ -65,15 +65,9 @@ app.get("/:route", function(req, res) {
     })
 
 });
-// app.post("/:route", (req, res) => {
-//         if (req.body.list === "work")
-//     })
+
 app.post("/", function(req, res) {
-    //     if (req.body.list === "work") {
-    //         var work = req.body.title;
-    //         works.push(work);
-    //         res.redirect("/work");
-    //     } else {
+
 
     var title = req.body.title;
     var heading = req.body.heading;
@@ -84,7 +78,7 @@ app.post("/", function(req, res) {
         res.redirect("/");
     } else {
         Heading.findOne({ name: heading }, (err, foundHeading) => {
-            console.log(foundHeading)
+
             foundHeading.title.push(List);
             foundHeading.save();
             res.redirect("/" + heading);
@@ -96,10 +90,23 @@ app.post("/", function(req, res) {
 
 app.post("/delete", (req, res) => {
     const checkItemId = req.body.checkbox;
-    Title.findByIdAndRemove(checkItemId, function(err) {
-        console.log('check delte run');
-        res.redirect('/');
-    });
+    var heading = req.body.heading;
+    if (heading === getdate.onlyday()) {
+
+        Title.findByIdAndRemove(checkItemId, function(err) {
+            if (!err)
+                res.redirect('/');
+        });
+    } else {
+        console.log(heading);
+        console.log(checkItemId);
+        Heading.findOneAndUpdate({ name: heading }, { $pull: { title: { _id: checkItemId } } }, function(err, foundList) {
+            if (!err) {
+                console.log('delted')
+                res.redirect("/" + heading);
+            }
+        });
+    }
 });
 
 
