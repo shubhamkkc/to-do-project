@@ -1,13 +1,15 @@
+require('dotenv').config()
 var express = require("express");
 var bodyParser = require("body-parser");
 var getdate = require(__dirname + "/date.js");
 var mongoose = require("mongoose");
+
 app = express();
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: true }));
 // main().catch(err=>console.log(err));
 
-mongoose.connect("mongodb+srv://shubhamkkc:12345@cluster0.ap96j.mongodb.net/myFirstDatabase?retryWrites=true&w=majority");
+mongoose.connect("mongodb+srv://shubhamkkc:" + process.env.DBPASSWORD + "@cluster0.ap96j.mongodb.net/myFirstDatabase?retryWrites=true&w=majority");
 const titleSchema = {
     name: String
 }
@@ -20,9 +22,9 @@ const headingSchema = {
 const Title = mongoose.model("title", titleSchema);
 const Heading = mongoose.model("Heading", headingSchema);
 
-const shop = new Title({ name: 'shop' });
-const study = new Title({ name: 'study' });
-const cleaning = new Title({ name: 'cleaning' });
+const shop = new Title({ name: 'Welcome to to do list' });
+const study = new Title({ name: 'Hit the + button to add a new item' });
+const cleaning = new Title({ name: 'click the checkbox to delete item' });
 
 const defaultArr = [shop, study, cleaning];
 
@@ -50,7 +52,6 @@ app.get("/:route", function(req, res) {
     Heading.findOne({ name: routeName }, (err, results) => {
         if (!err) {
             if (results) {
-
                 res.render("list", { heading: routeName, titles: results.title });
             } else {
                 const List = new Heading({
